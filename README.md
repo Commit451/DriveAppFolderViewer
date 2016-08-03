@@ -22,7 +22,7 @@ allprojects {
 Then, add the library to your project `build.gradle`
 ```gradle
 dependencies {
-    debugCompile 'com.github.Commit451.YouTubeExtractor:youtubeextractor:2.1.0'
+    debugCompile 'com.github.Commit451:DriveAppFolderViewer:1.0.0'
     //or, just "compile" if you want to use this in your release builds for some reason
 }
 ```
