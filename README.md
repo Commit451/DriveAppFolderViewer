@@ -1,9 +1,21 @@
 # DriveAppFolderViewer
 
+Allows easy visualization of files within an AppFolder in Google Drive
+
 [![Build Status](https://travis-ci.org/Commit451/DriveAppFolderViewer.svg?branch=master)](https://travis-ci.org/Commit451/DriveAppFolderViewer)
 [![](https://jitpack.io/v/Commit451/DriveAppFolderViewer.svg)](https://jitpack.io/#Commit451/DriveAppFolderViewer)
 
-//TODO
+## Usage
+To launch the file viewer
+```java
+Intent intent = DriveAppFolderViewerActivity.newIntent(this);
+startActivity(intent);
+finish();
+```
+Note: This library makes no attempt to resolve Google API connection issues, so it is best that you assure that a GoogleApiClient is connected before starting this intent.
+
+## Setup
+To build and test this project, you will need to generate your own OAuth 2.0 Client ID following the steps [here](https://developers.google.com/drive/android/get-started)
 
 License
 --------

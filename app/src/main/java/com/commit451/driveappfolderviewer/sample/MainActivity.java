@@ -14,6 +14,10 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.drive.Drive;
 
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener{
 
@@ -38,9 +42,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Intent intent = DriveAppFolderViewerActivity.newIntent(this);
-        startActivity(intent);
-        finish();
+        createDummyFolders();
     }
 
     @Override
@@ -58,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public void onConnectionSuspended(int i) {
-
     }
 
     @Override
@@ -74,5 +75,29 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 }
                 break;
         }
+    }
+
+    private void createDummyFolders() {
+        ObservableFactory.createABunchOfFoldersObservable(mGoogleApiClient)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Void>() {
+                    @Override
+                    public void onCompleted() {
+                        Intent intent = DriveAppFolderViewerActivity.newIntent(MainActivity.this);
+                        startActivity(intent);
+                        finish();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Void aVoid) {
+
+                    }
+                });
     }
 }
