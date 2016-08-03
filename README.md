@@ -7,13 +7,36 @@ Allows easy visualization of files within an AppFolder in Google Drive
 [![Build Status](https://travis-ci.org/Commit451/DriveAppFolderViewer.svg?branch=master)](https://travis-ci.org/Commit451/DriveAppFolderViewer)
 [![](https://jitpack.io/v/Commit451/DriveAppFolderViewer.svg)](https://jitpack.io/#Commit451/DriveAppFolderViewer)
 
+## Dependency
+Add this in your root `build.gradle` file (**not** your module `build.gradle` file):
+
+```gradle
+allprojects {
+	repositories {
+		...
+		maven { url "https://jitpack.io" }
+	}
+}
+```
+
+Then, add the library to your project `build.gradle`
+```gradle
+dependencies {
+    debugCompile 'com.github.Commit451.YouTubeExtractor:youtubeextractor:2.1.0'
+    //or, just "compile" if you want to use this in your release builds for some reason
+}
+```
+We recommend restricting access to this UI to just debug builds, since it is powerful and users could end up deleting important files without understanding what they do.
+
 ## Usage
 This library is intended to be used by developers to get a visualization of the folders they are creating within their private app folders in Google Drive. This is useful at times when you want to see that files and folders are being created properly and get a visualization of the file/folder structure within your app.
-To launch the file viewer
+To launch the file viewer:
 ```java
-Intent intent = DriveAppFolderViewerActivity.newIntent(this);
-startActivity(intent);
-finish();
+//Not required to wrap in debug check, but HIGHLY recommended
+if (BuildConfig.DEBUG) {
+    Intent intent = new Intent(context, DriveAppFolderViewerActivity.class);
+    startActivity(intent);
+}
 ```
 Note: This library makes no attempt to resolve Google API connection issues, so it is best that you assure that a GoogleApiClient is connected before starting this intent.
 
