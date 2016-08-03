@@ -7,4 +7,9 @@
         app:showAsAction="never"
         android:title="Delete" />
 
+    <item
+        android:id="@+id/action_size"
+        app:showAsAction="never"
+        android:title="Size" />
+
 </menu>

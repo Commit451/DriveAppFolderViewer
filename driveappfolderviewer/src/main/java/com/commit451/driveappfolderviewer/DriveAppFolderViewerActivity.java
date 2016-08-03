@@ -96,8 +96,15 @@ public class DriveAppFolderViewerActivity extends AppCompatActivity implements G
                     updatePath();
                     loadFilesInFolder(folder);
                 } else {
-                    Toast.makeText(DriveAppFolderViewerActivity.this, "This is a file", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DriveAppFolderViewerActivity.this, "This is a file", Toast.LENGTH_SHORT)
+                            .show();
                 }
+            }
+
+            @Override
+            public void onSizeClicked(Metadata metadata) {
+                Toast.makeText(DriveAppFolderViewerActivity.this, "File size: " + metadata.getFileSize() + " bytes", Toast.LENGTH_SHORT)
+                        .show();
             }
         });
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));

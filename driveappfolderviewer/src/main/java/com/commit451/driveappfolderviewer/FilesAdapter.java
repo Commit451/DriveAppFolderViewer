@@ -42,6 +42,10 @@ public class FilesAdapter extends RecyclerView.Adapter<FileViewHolder> {
                     mListener.onDeleteClicked((Metadata) fileViewHolder.itemView.getTag());
                     return true;
                 }
+                if (menuItem.getItemId() == R.id.action_size) {
+                    mListener.onSizeClicked((Metadata) fileViewHolder.itemView.getTag());
+                    return true;
+                }
                 return false;
             }
         });
@@ -74,5 +78,6 @@ public class FilesAdapter extends RecyclerView.Adapter<FileViewHolder> {
     public interface Listener {
         void onDeleteClicked(Metadata metadata);
         void onFileClicked(Metadata metadata);
+        void onSizeClicked(Metadata metadata);
     }
 }
