@@ -2,6 +2,8 @@
 
 Allows easy visualization of files within an AppFolder in Google Drive
 
+<img src="/art/screenshot-1.png?raw=true" width="200px">
+
 [![Build Status](https://travis-ci.org/Commit451/DriveAppFolderViewer.svg?branch=master)](https://travis-ci.org/Commit451/DriveAppFolderViewer)
 [![](https://jitpack.io/v/Commit451/DriveAppFolderViewer.svg)](https://jitpack.io/#Commit451/DriveAppFolderViewer)
 
