@@ -6,6 +6,7 @@ Allows easy visualization of files within an AppFolder in Google Drive
 [![](https://jitpack.io/v/Commit451/DriveAppFolderViewer.svg)](https://jitpack.io/#Commit451/DriveAppFolderViewer)
 
 ## Usage
+This library is intended to be used by developers to get a visualization of the folders they are creating within their private app folders in Google Drive. This is useful at times when you want to see that files and folders are being created properly and get a visualization of the file/folder structure within your app.
 To launch the file viewer
 ```java
 Intent intent = DriveAppFolderViewerActivity.newIntent(this);
@@ -15,7 +16,7 @@ finish();
 Note: This library makes no attempt to resolve Google API connection issues, so it is best that you assure that a GoogleApiClient is connected before starting this intent.
 
 ## Setup
-To build and test this project, you will need to generate your own OAuth 2.0 Client ID following the steps [here](https://developers.google.com/drive/android/get-started)
+To contribute to this project and test it with the sample within this repo, you will need to generate your own OAuth 2.0 Client ID following the steps [here](https://developers.google.com/drive/android/get-started)
 
 License
 --------
