@@ -20,7 +20,7 @@
         android:layout_gravity="center_vertical"
         android:contentDescription="@null"
         android:tint="@android:color/black"
-        tools:src="@drawable/ic_folder_24dp" />
+        tools:src="@drawable/dafv_ic_folder_24dp" />
 
     <TextView
         android:id="@+id/file_title"
@@ -44,6 +44,6 @@
         android:contentDescription="@null"
         android:padding="8dp"
         android:tint="@android:color/black"
-        app:srcCompat="@drawable/ic_overflow_24dp" />
+        app:srcCompat="@drawable/dafv_ic_overflow_24dp" />
 
 </LinearLayout>
