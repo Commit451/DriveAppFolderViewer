@@ -22,7 +22,7 @@ allprojects {
 Then, add the library to your project `build.gradle`
 ```gradle
 dependencies {
-    debugImplementation 'com.github.Commit451:DriveAppFolderViewer:1.0.0'
+    debugImplementation 'com.github.Commit451:DriveAppFolderViewer:latest.version.here'
     //or, just "implementation" if you want to use this in all your builds
 }
 ```
