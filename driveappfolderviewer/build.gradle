@@ -26,11 +26,13 @@ dependencies {
 
     api 'com.android.support:appcompat-v7:27.1.0'
     api 'com.android.support:recyclerview-v7:27.1.0'
+    api 'com.android.support:design:27.1.0'
 
     api 'com.google.android.gms:play-services-auth:11.8.0'
     api 'com.google.android.gms:play-services-drive:11.8.0'
 
     api 'com.github.Commit451:Tisk:1.0.2'
+    api 'com.github.Commit451:okyo:3.0.1'
 }
 
 apply from: 'https://raw.githubusercontent.com/Commit451/gradle-android-javadocs/1.0.0/gradle-android-javadocs.gradle'

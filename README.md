@@ -41,7 +41,7 @@ Note: This library makes no attempt to resolve Google API connection issues, so 
 To contribute to this project and test it with the sample within this repo, you will need to generate your own OAuth 2.0 Client ID following the steps [here](https://developers.google.com/drive/android/get-started)
 
 ## Note
-This library is pretty hefty, bringing in Kotlin, RxJava, and [Tisk](https://github.com/Commit451/Tisk). Make sure you are aware of this.
+This library is pretty hefty, bringing in Kotlin, RxJava, [okyo](https://github.com/Commit451/okyo), and [Tisk](https://github.com/Commit451/Tisk). Make sure you are aware of this.
 
 License
 --------

@@ -1,5 +1,6 @@
 package com.commit451.driveappfolderviewer
 
+import android.app.ProgressDialog.show
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -72,9 +73,8 @@ class DriveAppFolderViewerActivity : DriveAppViewerBaseActivity() {
                     updatePath()
                     loadFilesInFolder(folder)
                 } else {
-                    metadata.driveId.asDriveFile()
-                    Toast.makeText(this@DriveAppFolderViewerActivity, "This is a file", Toast.LENGTH_SHORT)
-                            .show()
+                    val intent = DriveAppFileViewerActivity.newIntent(this@DriveAppFolderViewerActivity, metadata.driveId)
+                    startActivity(intent)
                 }
             }
 
