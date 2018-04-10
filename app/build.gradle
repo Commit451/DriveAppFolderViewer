@@ -46,8 +46,10 @@ dependencies {
 
     implementation 'com.android.support:appcompat-v7:27.1.0'
 
-    implementation "io.reactivex.rxjava2:rxjava:2.1.9"
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    implementation "io.reactivex.rxjava2:rxjava:2.1.12"
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+
+    implementation 'com.github.Commit451:Tisk:1.0.2'
 
     implementation project(':driveappfolderviewer')
 }

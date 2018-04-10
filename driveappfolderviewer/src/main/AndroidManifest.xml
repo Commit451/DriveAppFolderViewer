@@ -5,11 +5,11 @@
 
         <activity
             android:name=".DriveAppFolderViewerActivity"
-            android:theme="@style/DriveAppFolderViewerTheme" />
+            android:theme="@style/dafv_DriveAppFolderViewerTheme" />
 
         <activity
             android:name=".DriveAppFileViewerActivity"
-            android:theme="@style/DriveAppFolderViewerTheme" />
+            android:theme="@style/dafv_DriveAppFolderViewerTheme" />
 
     </application>
 

@@ -11,6 +11,9 @@ import android.widget.TextView
 import com.google.android.gms.drive.DriveFolder
 import com.google.android.gms.drive.Metadata
 
+/**
+ * View folder for file and folders
+ */
 internal class FileViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     companion object {
