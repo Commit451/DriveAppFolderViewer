@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
-import android.support.v7.widget.Toolbar
+import androidx.appcompat.widget.Toolbar
 import android.text.format.DateFormat
 import android.view.View
 import android.widget.ProgressBar
@@ -47,14 +47,14 @@ class DriveAppFileViewerActivity : DriveAppViewerBaseActivity() {
         val driveId = intent.getParcelableExtra<DriveId>(KEY_DRIVE_ID)
         driveResourceClient.getMetadata(driveId.asDriveResource())
                 .addOnCompleteListener {
-                    val modified = it.result.modifiedDate
-                    toolbar.title = it.result.title
+                    val modified = it.result?.modifiedDate
+                    toolbar.title = it.result?.title
                     toolbar.subtitle = "Last Modified ${DateFormat.getLongDateFormat(this).format(modified)} at ${DateFormat.getTimeFormat(this).format(modified)}"
                 }
         driveResourceClient.openFile(driveId.asDriveFile(), DriveFile.MODE_READ_ONLY)
                 .addOnCompleteListener {
                     progress.visibility = View.GONE
-                    val contents = Okyo.readInputStreamAsString(it.result.inputStream)
+                    val contents = Okyo.readInputStreamAsString(it.result!!.inputStream)
                     textMessage.text = contents
                 }
                 .addOnFailureListener {
