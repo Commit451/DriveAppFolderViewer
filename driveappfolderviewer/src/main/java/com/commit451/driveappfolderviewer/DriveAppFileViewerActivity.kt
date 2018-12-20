@@ -3,7 +3,6 @@ package com.commit451.driveappfolderviewer
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.format.DateFormat
 import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
@@ -12,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.commit451.okyo.Okyo
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import io.reactivex.disposables.CompositeDisposable
 
 class DriveAppFileViewerActivity : DriveAppViewerBaseActivity() {
 
@@ -30,6 +30,8 @@ class DriveAppFileViewerActivity : DriveAppViewerBaseActivity() {
     private lateinit var progress: ProgressBar
     private lateinit var textMessage: TextView
 
+    private val disposables = CompositeDisposable()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dafv_activity_drive_app_file_viewer)
@@ -45,24 +47,36 @@ class DriveAppFileViewerActivity : DriveAppViewerBaseActivity() {
         super.onSignedIn(googleSignInAccount)
         val fileId = intent.getStringExtra(KEY_FILE_ID)
 
-        drive!!.files().get(fileId)
-                .asSingle()
-                .subscribe({
-                    val modified = it.modifiedTime
-                    toolbar.title = it.name
-                    toolbar.subtitle = "Last Modified $modified"
-                }, {
-                    error(it)
-                })
-        drive!!.files().get(fileId)
-                .asInputStream()
-                .subscribe({
-                    progress.visibility = View.GONE
-                    val contents = Okyo.readInputStreamAsString(it)
-                    textMessage.text = contents
-                }, {
-                    error(it)
-                })
+        disposables.add(
+                drive!!.files().get(fileId)
+                        .asSingle()
+                        .with()
+                        .subscribe({
+                            toolbar.title = it.name
+                            toolbar.subtitle = "Created ${it.createdTime}"
+                        }, {
+                            error(it)
+                        })
+        )
+        disposables.add(
+                drive!!.files().get(fileId)
+                        .asInputStream()
+                        .map {
+                            Okyo.readInputStreamAsString(it)
+                        }
+                        .with()
+                        .subscribe({
+                            progress.visibility = View.GONE
+                            textMessage.text = it
+                        }, {
+                            error(it)
+                        })
+        )
+    }
+
+    override fun onDestroy() {
+        disposables.clear()
+        super.onDestroy()
     }
 
     private fun error(throwable: Throwable) {

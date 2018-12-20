@@ -70,9 +70,9 @@ class DriveAppFolderViewerActivity : DriveAppViewerBaseActivity() {
             override fun onFileClicked(file: File) {
                 if (file.mimeType == MIME_TYPE_FOLDER) {
                     folderPath.add(file)
-                    folderTitles.add(file.originalFilename)
+                    folderTitles.add(file.name)
                     updatePath()
-                    loadFilesInFolder(file)
+                    loadFilesInFolder(file.id)
                 } else {
                     val intent = DriveAppFileViewerActivity.newIntent(this@DriveAppFolderViewerActivity, file.id)
                     startActivity(intent)
@@ -95,42 +95,36 @@ class DriveAppFolderViewerActivity : DriveAppViewerBaseActivity() {
         super.onSignedIn(googleAccount)
         folderPath.clear()
         folderTitles.clear()
+        loadFilesInFolder(SPACE)
+    }
+
+    override fun onDestroy() {
+        disposables.clear()
+        super.onDestroy()
+    }
+
+    private fun loadFilesInFolder(fileId: String) {
+        textMessage.visibility = View.GONE
+        swipeRefreshLayout.isRefreshing = true
         disposables.add(
                 drive!!.files()
                         .list()
+                        .setSpaces(SPACE)
+                        .setQ("'$fileId' in parents")
+                        .setPageSize(1000)
                         .asSingle()
                         .with()
                         .subscribe({
+                            swipeRefreshLayout.isRefreshing = false
                             adapter.setFiles(it.files)
                             if (it.files.isNullOrEmpty()) {
                                 showEmpty()
                             }
                         }, {
+                            swipeRefreshLayout.isRefreshing = false
                             showError(it)
                         })
         )
-
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        disposables.clear()
-    }
-
-    private fun loadFilesInFolder(file: File) {
-        textMessage.visibility = View.GONE
-        swipeRefreshLayout.isRefreshing = true
-//        val query = Query.Builder()
-//                .build()
-//        driveResourceClient.queryChildren(folder, query)
-//                .addOnCompleteListener {
-//                    swipeRefreshLayout.isRefreshing = false
-//                    setResultsFromBuffer(it.result!!)
-//                }
-//                .addOnFailureListener {
-//                    swipeRefreshLayout.isRefreshing = false
-//                    showError()
-//                }
     }
 
     private fun showError(throwable: Throwable) {
@@ -146,7 +140,7 @@ class DriveAppFolderViewerActivity : DriveAppViewerBaseActivity() {
 
     private fun refresh() {
         val folder = folderPath[folderPath.size - 1]
-        loadFilesInFolder(folder)
+        loadFilesInFolder(folder.id)
     }
 
     private fun updatePath() {
@@ -163,7 +157,7 @@ class DriveAppFolderViewerActivity : DriveAppViewerBaseActivity() {
         } else {
             folderPath.removeAt(folderPath.size - 1)
             val folder = folderPath[folderPath.size - 1]
-            loadFilesInFolder(folder)
+            loadFilesInFolder(folder.id)
             folderTitles.removeAt(folderTitles.size - 1)
             updatePath()
         }

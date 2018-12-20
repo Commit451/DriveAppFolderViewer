@@ -15,7 +15,6 @@ import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
-import com.google.api.services.drive.DriveScopes
 import java.util.*
 
 
@@ -34,7 +33,7 @@ abstract class DriveAppViewerBaseActivity : AppCompatActivity() {
     private fun buildGoogleSignInClient(): GoogleSignInClient {
         val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
-                .requestScopes(Scope(DriveScopes.DRIVE_FILE))
+                .requestScopes(Scope(SCOPE))
                 .build()
         return GoogleSignIn.getClient(this, signInOptions)
     }
@@ -81,7 +80,7 @@ abstract class DriveAppViewerBaseActivity : AppCompatActivity() {
     protected open fun onSignedIn(googleSignInAccount: GoogleSignInAccount) {
         // Use the authenticated account to sign in to the Drive service.
         val credential = GoogleAccountCredential.usingOAuth2(
-                this, Collections.singleton(DriveScopes.DRIVE_FILE))
+                this, Collections.singleton(SCOPE))
         credential.selectedAccount = googleSignInAccount.account
         drive = Drive.Builder(
                 AndroidHttp.newCompatibleTransport(),

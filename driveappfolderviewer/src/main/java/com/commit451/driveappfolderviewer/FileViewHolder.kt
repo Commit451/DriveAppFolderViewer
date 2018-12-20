@@ -1,13 +1,12 @@
 package com.commit451.driveappfolderviewer
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
-
+import androidx.recyclerview.widget.RecyclerView
 import com.google.api.services.drive.model.File
 
 /**
@@ -43,6 +42,10 @@ internal class FileViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         } else {
             imageView.setImageResource(R.drawable.dafv_ic_file_24dp)
         }
-        titleView.text = file.name
+        var name = file.name
+        file.fileExtension?.let {
+            name += ".$it"
+        }
+        titleView.text = name
     }
 }
