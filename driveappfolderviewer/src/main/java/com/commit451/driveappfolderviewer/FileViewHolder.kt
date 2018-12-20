@@ -8,8 +8,7 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 
-import com.google.android.gms.drive.DriveFolder
-import com.google.android.gms.drive.Metadata
+import com.google.api.services.drive.model.File
 
 /**
  * View folder for file and folders
@@ -25,9 +24,9 @@ internal class FileViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         }
     }
 
-    var titleView: TextView = view.findViewById<View>(R.id.file_title) as TextView
-    var imageView: ImageView = view.findViewById<View>(R.id.file_image) as ImageView
-    var moreView: ImageView = view.findViewById<View>(R.id.file_more) as ImageView
+    private var titleView: TextView = view.findViewById<View>(R.id.file_title) as TextView
+    private var imageView: ImageView = view.findViewById<View>(R.id.file_image) as ImageView
+    private var moreView: ImageView = view.findViewById<View>(R.id.file_more) as ImageView
 
     val popupMenu: PopupMenu
 
@@ -38,12 +37,12 @@ internal class FileViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         moreView.setOnClickListener { popupMenu.show() }
     }
 
-    fun bind(metadata: Metadata) {
-        if (metadata.mimeType == DriveFolder.MIME_TYPE) {
+    fun bind(file: File) {
+        if (file.mimeType == MIME_TYPE_FOLDER) {
             imageView.setImageResource(R.drawable.dafv_ic_folder_24dp)
         } else {
             imageView.setImageResource(R.drawable.dafv_ic_file_24dp)
         }
-        titleView.text = metadata.title
+        titleView.text = file.name
     }
 }

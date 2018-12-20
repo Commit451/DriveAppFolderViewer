@@ -4,10 +4,13 @@ import android.os.Bundle
 
 import com.commit451.driveappfolderviewer.DriveAppFolderViewerActivity
 import com.commit451.driveappfolderviewer.DriveAppViewerBaseActivity
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-//I am cheating by extending this base class, you should not actually do this
+/**
+ * I am cheating by extending this base class, you should not actually do this
+ */
 class MainActivity : DriveAppViewerBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,9 +18,9 @@ class MainActivity : DriveAppViewerBaseActivity() {
         setContentView(R.layout.activity_main)
     }
 
-    override fun onSignedIn() {
-        super.onSignedIn()
-        TestApi.createThingsIfNeeded(driveResourceClient)
+    override fun onSignedIn(googleSignInAccount: GoogleSignInAccount) {
+        super.onSignedIn(googleSignInAccount)
+        TestApi.createThingsIfNeeded(drive!!)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

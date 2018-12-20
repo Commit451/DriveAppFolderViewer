@@ -2,27 +2,26 @@ package com.commit451.driveappfolderviewer
 
 import android.content.Context
 import android.content.Intent
-import android.icu.text.SimpleDateFormat
 import android.os.Bundle
-import androidx.appcompat.widget.Toolbar
 import android.text.format.DateFormat
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import com.commit451.okyo.Okyo
-import com.google.android.gms.drive.DriveFile
-import com.google.android.gms.drive.DriveId
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 
 class DriveAppFileViewerActivity : DriveAppViewerBaseActivity() {
 
     companion object {
 
-        private const val KEY_DRIVE_ID = "driveId"
+        private const val KEY_FILE_ID = "fileId"
 
-        fun newIntent(context: Context, driveId: DriveId): Intent {
+        fun newIntent(context: Context, fileId: String): Intent {
             val intent = Intent(context, DriveAppFileViewerActivity::class.java)
-            intent.putExtra(KEY_DRIVE_ID, driveId)
+            intent.putExtra(KEY_FILE_ID, fileId)
             return intent
         }
     }
@@ -42,25 +41,34 @@ class DriveAppFileViewerActivity : DriveAppViewerBaseActivity() {
         progress = findViewById(android.R.id.progress)
     }
 
-    override fun onSignedIn() {
-        super.onSignedIn()
-        val driveId = intent.getParcelableExtra<DriveId>(KEY_DRIVE_ID)
-        driveResourceClient.getMetadata(driveId.asDriveResource())
-                .addOnCompleteListener {
-                    val modified = it.result?.modifiedDate
-                    toolbar.title = it.result?.title
-                    toolbar.subtitle = "Last Modified ${DateFormat.getLongDateFormat(this).format(modified)} at ${DateFormat.getTimeFormat(this).format(modified)}"
-                }
-        driveResourceClient.openFile(driveId.asDriveFile(), DriveFile.MODE_READ_ONLY)
-                .addOnCompleteListener {
+    override fun onSignedIn(googleSignInAccount: GoogleSignInAccount) {
+        super.onSignedIn(googleSignInAccount)
+        val fileId = intent.getStringExtra(KEY_FILE_ID)
+
+        drive!!.files().get(fileId)
+                .asSingle()
+                .subscribe({
+                    val modified = it.modifiedTime
+                    toolbar.title = it.name
+                    toolbar.subtitle = "Last Modified $modified"
+                }, {
+                    error(it)
+                })
+        drive!!.files().get(fileId)
+                .asInputStream()
+                .subscribe({
                     progress.visibility = View.GONE
-                    val contents = Okyo.readInputStreamAsString(it.result!!.inputStream)
+                    val contents = Okyo.readInputStreamAsString(it)
                     textMessage.text = contents
-                }
-                .addOnFailureListener {
-                    Toast.makeText(this, "Unable to load file contents", Toast.LENGTH_SHORT)
-                            .show()
-                    finish()
-                }
+                }, {
+                    error(it)
+                })
+    }
+
+    private fun error(throwable: Throwable) {
+        Toast.makeText(this, "Unable to load file contents", Toast.LENGTH_LONG)
+                .show()
+        finish()
+        Log.e("DriveAppViewer", "Error", throwable)
     }
 }

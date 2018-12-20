@@ -1,37 +1,30 @@
 package com.commit451.driveappfolderviewer
 
-import androidx.recyclerview.widget.RecyclerView
-import android.view.MenuItem
-import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-
-import com.google.android.gms.drive.Metadata
-
-import java.util.ArrayList
+import androidx.recyclerview.widget.RecyclerView
+import com.google.api.services.drive.model.File
 
 /**
  * Adapter which shows the files
  */
-internal class FilesAdapter(private val mListener: Listener) : RecyclerView.Adapter<FileViewHolder>() {
+internal class FilesAdapter(private val listener: Listener) : RecyclerView.Adapter<FileViewHolder>() {
 
-    private val mMetadatas: ArrayList<Metadata> = ArrayList()
-
-    private val mOnClickListener = View.OnClickListener { view ->
-        val metadata = view.tag as Metadata
-        mListener.onFileClicked(metadata)
-    }
+    private val files = mutableListOf<File>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileViewHolder {
         val fileViewHolder = FileViewHolder.inflate(parent)
-        fileViewHolder.itemView.setOnClickListener(mOnClickListener)
+        fileViewHolder.itemView.setOnClickListener { view ->
+            val metadata = view.tag as File
+            listener.onFileClicked(metadata)
+        }
         fileViewHolder.popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { menuItem ->
             if (menuItem.itemId == R.id.action_delete) {
-                mListener.onDeleteClicked(fileViewHolder.itemView.tag as Metadata)
+                listener.onDeleteClicked(fileViewHolder.itemView.tag as File)
                 return@OnMenuItemClickListener true
             }
             if (menuItem.itemId == R.id.action_size) {
-                mListener.onSizeClicked(fileViewHolder.itemView.tag as Metadata)
+                listener.onSizeClicked(fileViewHolder.itemView.tag as File)
                 return@OnMenuItemClickListener true
             }
             false
@@ -40,31 +33,31 @@ internal class FilesAdapter(private val mListener: Listener) : RecyclerView.Adap
     }
 
     override fun onBindViewHolder(holder: FileViewHolder, position: Int) {
-        val metadata = mMetadatas[position]
+        val metadata = files[position]
         holder.itemView.tag = metadata
         holder.bind(metadata)
     }
 
     override fun getItemCount(): Int {
-        return mMetadatas.size
+        return files.size
     }
 
-    fun setMetadatas(metadatas: ArrayList<Metadata>) {
-        mMetadatas.clear()
-        mMetadatas.addAll(metadatas)
+    fun setFiles(files: Collection<File>) {
+        this.files.clear()
+        this.files.addAll(files)
         notifyDataSetChanged()
     }
 
-    fun clearMetadatas() {
-        mMetadatas.clear()
+    fun clearFiles() {
+        files.clear()
         notifyDataSetChanged()
     }
 
     interface Listener {
-        fun onDeleteClicked(metadata: Metadata)
+        fun onDeleteClicked(file: File)
 
-        fun onFileClicked(metadata: Metadata)
+        fun onFileClicked(file: File)
 
-        fun onSizeClicked(metadata: Metadata)
+        fun onSizeClicked(file: File)
     }
 }

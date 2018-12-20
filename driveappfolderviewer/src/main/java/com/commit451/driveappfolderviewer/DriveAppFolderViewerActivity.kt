@@ -3,19 +3,18 @@ package com.commit451.driveappfolderviewer
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-
-import com.google.android.gms.drive.DriveFolder
-import com.google.android.gms.drive.Metadata
-import com.google.android.gms.drive.MetadataBuffer
-import com.google.android.gms.drive.query.Query
-
-import java.util.ArrayList
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.api.services.drive.model.File
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
+import java.util.*
 
 /**
  * Allows you to view your private app drive files and folders
@@ -37,7 +36,9 @@ class DriveAppFolderViewerActivity : DriveAppViewerBaseActivity() {
     private lateinit var adapter: FilesAdapter
 
     private var folderTitles = mutableListOf<String>()
-    private var folderPath = mutableListOf<DriveFolder>()
+    private var folderPath = mutableListOf<File>()
+
+    private val disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,34 +52,35 @@ class DriveAppFolderViewerActivity : DriveAppViewerBaseActivity() {
         textMessage = findViewById<View>(android.R.id.message) as TextView
 
         adapter = FilesAdapter(object : FilesAdapter.Listener {
-            override fun onDeleteClicked(metadata: Metadata) {
-                driveResourceClient.delete(metadata.driveId.asDriveResource())
-                        ?.addOnCompleteListener {
+            override fun onDeleteClicked(file: File) {
+                val disposable = drive!!.files().delete(file.id)
+                        .asCompletable()
+                        .with()
+                        .subscribe({
                             Toast.makeText(this@DriveAppFolderViewerActivity, "File deleted", Toast.LENGTH_SHORT)
                                     .show()
                             refresh()
-                        }
-                        ?.addOnFailureListener {
+                        }, {
                             Toast.makeText(this@DriveAppFolderViewerActivity, "Failed to delete", Toast.LENGTH_SHORT)
                                     .show()
-                        }
+                        })
+                disposables.add(disposable)
             }
 
-            override fun onFileClicked(metadata: Metadata) {
-                if (metadata.mimeType == DriveFolder.MIME_TYPE) {
-                    val folder = metadata.driveId.asDriveFolder()
-                    folderPath.add(folder)
-                    folderTitles.add(metadata.title)
+            override fun onFileClicked(file: File) {
+                if (file.mimeType == MIME_TYPE_FOLDER) {
+                    folderPath.add(file)
+                    folderTitles.add(file.originalFilename)
                     updatePath()
-                    loadFilesInFolder(folder)
+                    loadFilesInFolder(file)
                 } else {
-                    val intent = DriveAppFileViewerActivity.newIntent(this@DriveAppFolderViewerActivity, metadata.driveId)
+                    val intent = DriveAppFileViewerActivity.newIntent(this@DriveAppFolderViewerActivity, file.id)
                     startActivity(intent)
                 }
             }
 
-            override fun onSizeClicked(metadata: Metadata) {
-                Toast.makeText(this@DriveAppFolderViewerActivity, "File size: " + metadata.fileSize + " bytes", Toast.LENGTH_SHORT)
+            override fun onSizeClicked(file: File) {
+                Toast.makeText(this@DriveAppFolderViewerActivity, "File size: " + file.getSize() + " bytes", Toast.LENGTH_SHORT)
                         .show()
             }
         })
@@ -89,54 +91,52 @@ class DriveAppFolderViewerActivity : DriveAppViewerBaseActivity() {
         updatePath()
     }
 
-    override fun onSignedIn() {
-        super.onSignedIn()
+    override fun onSignedIn(googleAccount: GoogleSignInAccount) {
+        super.onSignedIn(googleAccount)
         folderPath.clear()
         folderTitles.clear()
-        driveResourceClient.appFolder
-                .addOnCompleteListener {
-                    folderPath.add(it.result!!)
-                    folderTitles.add("root")
-                    loadFilesInFolder(it.result!!)
-                    updatePath()
-                }
+        disposables.add(
+                drive!!.files()
+                        .list()
+                        .asSingle()
+                        .with()
+                        .subscribe({
+                            adapter.setFiles(it.files)
+                            if (it.files.isNullOrEmpty()) {
+                                showEmpty()
+                            }
+                        }, {
+                            showError(it)
+                        })
+        )
 
     }
 
-    private fun loadFilesInFolder(folder: DriveFolder) {
+    override fun onDestroy() {
+        super.onDestroy()
+        disposables.clear()
+    }
+
+    private fun loadFilesInFolder(file: File) {
         textMessage.visibility = View.GONE
         swipeRefreshLayout.isRefreshing = true
-        val query = Query.Builder()
-                .build()
-        driveResourceClient.queryChildren(folder, query)
-                .addOnCompleteListener {
-                    swipeRefreshLayout.isRefreshing = false
-                    setResultsFromBuffer(it.result!!)
-                }
-                .addOnFailureListener {
-                    swipeRefreshLayout.isRefreshing = false
-                    showError()
-                }
+//        val query = Query.Builder()
+//                .build()
+//        driveResourceClient.queryChildren(folder, query)
+//                .addOnCompleteListener {
+//                    swipeRefreshLayout.isRefreshing = false
+//                    setResultsFromBuffer(it.result!!)
+//                }
+//                .addOnFailureListener {
+//                    swipeRefreshLayout.isRefreshing = false
+//                    showError()
+//                }
     }
 
-
-    private fun setResultsFromBuffer(buffer: MetadataBuffer) {
-        if (buffer.count == 0) {
-            showEmpty()
-            adapter.clearMetadatas()
-        } else {
-            val metadatas = ArrayList<Metadata>()
-            for (metadata in buffer) {
-                metadatas.add(metadata.freeze())
-            }
-            adapter.setMetadatas(metadatas)
-        }
-        buffer.release()
-    }
-
-    private fun showError() {
+    private fun showError(throwable: Throwable) {
         textMessage.visibility = View.VISIBLE
         textMessage.text = "Error"
+        Log.e("DriveAppViewer", "Error", throwable)
     }
 
     private fun showEmpty() {

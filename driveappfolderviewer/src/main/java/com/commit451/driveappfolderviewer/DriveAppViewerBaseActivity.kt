@@ -3,14 +3,21 @@ package com.commit451.driveappfolderviewer
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
-import android.widget.Toast
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.drive.Drive
-import com.google.android.gms.drive.DriveResourceClient
+import com.google.android.gms.common.api.Scope
+import com.google.api.client.extensions.android.http.AndroidHttp
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
+import com.google.api.client.json.gson.GsonFactory
+import com.google.api.services.drive.Drive
+import com.google.api.services.drive.DriveScopes
+import java.util.*
+
 
 abstract class DriveAppViewerBaseActivity : AppCompatActivity() {
 
@@ -18,7 +25,7 @@ abstract class DriveAppViewerBaseActivity : AppCompatActivity() {
         private const val REQUEST_CODE_SIGN_IN = 0
     }
 
-    protected lateinit var driveResourceClient: DriveResourceClient
+    protected var drive: Drive? = null
 
     private val googleSignInClient by lazy {
         buildGoogleSignInClient()
@@ -26,7 +33,8 @@ abstract class DriveAppViewerBaseActivity : AppCompatActivity() {
 
     private fun buildGoogleSignInClient(): GoogleSignInClient {
         val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestScopes(Drive.SCOPE_APPFOLDER)
+                .requestEmail()
+                .requestScopes(Scope(DriveScopes.DRIVE_FILE))
                 .build()
         return GoogleSignIn.getClient(this, signInOptions)
     }
@@ -35,13 +43,13 @@ abstract class DriveAppViewerBaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         googleSignInClient.silentSignIn()
-                .addOnSuccessListener({ _ ->
-                    onSignedIn()
-                })
-                .addOnFailureListener({
+                .addOnSuccessListener {
+                    onSignedIn(it)
+                }
+                .addOnFailureListener {
                     // Silent sign-in failed, display account selection prompt
                     startActivityForResult(googleSignInClient.signInIntent, REQUEST_CODE_SIGN_IN)
-                })
+                }
     }
 
     @CallSuper
@@ -50,18 +58,41 @@ abstract class DriveAppViewerBaseActivity : AppCompatActivity() {
         when (requestCode) {
             REQUEST_CODE_SIGN_IN -> {
                 // Called after user is signed in.
-                if (resultCode == Activity.RESULT_OK) {
-                    onSignedIn()
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    handleSignInResult(data)
                 } else {
-                    Toast.makeText(this, "Unable to connect to Google Drive", Toast.LENGTH_SHORT)
-                            .show()
+                    onSignedInFailure(null)
                 }
             }
         }
     }
 
+    private fun handleSignInResult(result: Intent) {
+        GoogleSignIn.getSignedInAccountFromIntent(result)
+                .addOnSuccessListener { googleAccount ->
+                    onSignedIn(googleAccount)
+                }
+                .addOnFailureListener { exception ->
+                    onSignedInFailure(exception)
+                }
+    }
+
     @CallSuper
-    protected open fun onSignedIn() {
-        driveResourceClient = Drive.getDriveResourceClient(this, GoogleSignIn.getLastSignedInAccount(this)!!)
+    protected open fun onSignedIn(googleSignInAccount: GoogleSignInAccount) {
+        // Use the authenticated account to sign in to the Drive service.
+        val credential = GoogleAccountCredential.usingOAuth2(
+                this, Collections.singleton(DriveScopes.DRIVE_FILE))
+        credential.selectedAccount = googleSignInAccount.account
+        drive = Drive.Builder(
+                AndroidHttp.newCompatibleTransport(),
+                GsonFactory(),
+                credential)
+                .setApplicationName("Drive App Viewer")
+                .build()
+    }
+
+    protected open fun onSignedInFailure(exception: Exception?) {
+        Toast.makeText(this, "Unable to connect to Google Drive", Toast.LENGTH_SHORT)
+                .show()
     }
 }
