@@ -3,6 +3,7 @@ package com.commit451.driveappfolderviewer.sample
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import com.commit451.driveappfolderviewer.DriveAppFolderViewer
 
 import com.commit451.driveappfolderviewer.DriveAppFolderViewerActivity
 import com.commit451.driveappfolderviewer.DriveAppViewerBaseActivity
@@ -36,7 +37,7 @@ class MainActivity : DriveAppViewerBaseActivity() {
         }
 
         buttonShowFiles.setOnClickListener {
-            val intent = DriveAppFolderViewerActivity.newIntent(this@MainActivity)
+            val intent = DriveAppFolderViewer.intent(this)
             startActivity(intent)
         }
     }
