@@ -1,5 +1,6 @@
 package com.commit451.driveappfolderviewer
 
+import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveRequest
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -13,9 +14,9 @@ internal fun <T> DriveRequest<T>.asSingle(): Single<T> {
     }
 }
 
-internal fun DriveRequest<*>.asInputStream(): Single<InputStream> {
+internal fun Drive.Files.Get.asInputStream(): Single<InputStream> {
     return Single.defer {
-        Single.just(this.executeAsInputStream())
+        Single.just(this.executeMediaAsInputStream())
     }
 }
 

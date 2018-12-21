@@ -49,6 +49,7 @@ class DriveAppFileViewerActivity : DriveAppViewerBaseActivity() {
 
         disposables.add(
                 drive!!.files().get(fileId)
+                        .setFields("name,createdTime,modifiedTime")
                         .asSingle()
                         .with()
                         .subscribe({

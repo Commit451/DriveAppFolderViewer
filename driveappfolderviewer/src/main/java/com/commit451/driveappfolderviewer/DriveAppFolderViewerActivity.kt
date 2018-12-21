@@ -13,8 +13,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.api.services.drive.model.File
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
-import java.util.*
 
 /**
  * Allows you to view your private app drive files and folders
@@ -35,22 +33,22 @@ class DriveAppFolderViewerActivity : DriveAppViewerBaseActivity() {
 
     private lateinit var adapter: FilesAdapter
 
-    private var folderTitles = mutableListOf<String>()
-    private var folderPath = mutableListOf<File>()
+    private var path = mutableListOf<Path>()
 
     private val disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dafv_activity_drive_app_folder_viewer)
-        folderPath = ArrayList()
-        folderTitles = ArrayList()
 
         textPath = findViewById<View>(android.R.id.text1) as TextView
         swipeRefreshLayout = findViewById<View>(android.R.id.progress) as SwipeRefreshLayout
         list = findViewById<View>(android.R.id.list) as RecyclerView
         textMessage = findViewById<View>(android.R.id.message) as TextView
 
+        textPath.setOnClickListener {
+            onBackPressed()
+        }
         adapter = FilesAdapter(object : FilesAdapter.Listener {
             override fun onDeleteClicked(file: File) {
                 val disposable = drive!!.files().delete(file.id)
@@ -69,8 +67,7 @@ class DriveAppFolderViewerActivity : DriveAppViewerBaseActivity() {
 
             override fun onFileClicked(file: File) {
                 if (file.mimeType == MIME_TYPE_FOLDER) {
-                    folderPath.add(file)
-                    folderTitles.add(file.name)
+                    path.add(Path(file.id, file.name))
                     updatePath()
                     loadFilesInFolder(file.id)
                 } else {
@@ -91,10 +88,11 @@ class DriveAppFolderViewerActivity : DriveAppViewerBaseActivity() {
         updatePath()
     }
 
-    override fun onSignedIn(googleAccount: GoogleSignInAccount) {
-        super.onSignedIn(googleAccount)
-        folderPath.clear()
-        folderTitles.clear()
+    override fun onSignedIn(googleSignInAccount: GoogleSignInAccount) {
+        super.onSignedIn(googleSignInAccount)
+        path.clear()
+        path.add(Path(SPACE, SPACE))
+        updatePath()
         loadFilesInFolder(SPACE)
     }
 
@@ -139,27 +137,24 @@ class DriveAppFolderViewerActivity : DriveAppViewerBaseActivity() {
     }
 
     private fun refresh() {
-        val folder = folderPath[folderPath.size - 1]
+        val folder = path.last()
         loadFilesInFolder(folder.id)
     }
 
     private fun updatePath() {
-        var path = ""
-        for (title in folderTitles) {
-            path = "$path$title/"
-        }
-        textPath.text = path
+        textPath.text = path.joinToString("/") { it.name }
     }
 
     override fun onBackPressed() {
-        if (folderPath.size == 1) {
+        if (path.size == 1) {
             super.onBackPressed()
         } else {
-            folderPath.removeAt(folderPath.size - 1)
-            val folder = folderPath[folderPath.size - 1]
+            path.remove(path.last())
+            val folder = path.last()
             loadFilesInFolder(folder.id)
-            folderTitles.removeAt(folderTitles.size - 1)
             updatePath()
         }
     }
+
+    data class Path(val id: String, val name: String)
 }
