@@ -3,6 +3,7 @@ package com.commit451.driveappfolderviewer
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
@@ -91,6 +92,7 @@ abstract class DriveAppViewerBaseActivity : AppCompatActivity() {
     }
 
     protected open fun onSignedInFailure(exception: Exception?) {
+        Log.e(TAG, ERROR_MESSAGE, exception)
         Toast.makeText(this, "Unable to connect to Google Drive", Toast.LENGTH_SHORT)
                 .show()
     }

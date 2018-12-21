@@ -48,11 +48,6 @@ internal class FilesAdapter(private val listener: Listener) : RecyclerView.Adapt
         notifyDataSetChanged()
     }
 
-    fun clearFiles() {
-        files.clear()
-        notifyDataSetChanged()
-    }
-
     interface Listener {
         fun onDeleteClicked(file: File)
 

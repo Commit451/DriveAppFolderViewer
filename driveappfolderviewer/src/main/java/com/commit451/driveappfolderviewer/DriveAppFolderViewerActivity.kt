@@ -127,9 +127,9 @@ class DriveAppFolderViewerActivity : DriveAppViewerBaseActivity() {
     }
 
     private fun showError(throwable: Throwable) {
+        Log.e(TAG, ERROR_MESSAGE, throwable)
         textMessage.visibility = View.VISIBLE
         textMessage.text = "Error"
-        Log.e("DriveAppViewer", "Error", throwable)
     }
 
     private fun showEmpty() {

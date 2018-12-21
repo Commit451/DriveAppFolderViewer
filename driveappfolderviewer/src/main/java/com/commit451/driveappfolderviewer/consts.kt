@@ -2,18 +2,22 @@ package com.commit451.driveappfolderviewer
 
 import com.google.api.services.drive.DriveScopes
 
-const val MIME_TYPE_FOLDER = "application/vnd.google-apps.folder"
+internal const val MIME_TYPE_FOLDER = "application/vnd.google-apps.folder"
 
 /**
  * Can change this to "drive" for testing
  */
-const val SPACE = "appDataFolder"
+internal const val SPACE = "appDataFolder"
 
 /**
  * Can change this to "DriveScopes.DRIVE_FILE" for testing
  */
-const val SCOPE = DriveScopes.DRIVE_APPDATA
+internal const val SCOPE = DriveScopes.DRIVE_APPDATA
 
-const val FILE_FIELDS = "id,name,modifiedTime,size,mimeType"
+internal const val FILE_FIELDS = "id,name,modifiedTime,size,mimeType"
 
-const val FILES_FIELDS = "files($FILE_FIELDS)"
+internal const val FILES_FIELDS = "files($FILE_FIELDS)"
+
+internal const val TAG = "DriveAppFolderViewer"
+
+internal const val ERROR_MESSAGE = "Something went wrong within $TAG"

@@ -13,6 +13,9 @@ import com.commit451.okyo.Okyo
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import io.reactivex.disposables.CompositeDisposable
 
+/**
+ * Shows the contents of a single file within the app folder
+ */
 class DriveAppFileViewerActivity : DriveAppViewerBaseActivity() {
 
     companion object {
@@ -84,6 +87,6 @@ class DriveAppFileViewerActivity : DriveAppViewerBaseActivity() {
         Toast.makeText(this, "Unable to load file contents", Toast.LENGTH_LONG)
                 .show()
         finish()
-        Log.e("DriveAppViewer", "Error", throwable)
+        Log.e(TAG, ERROR_MESSAGE, throwable)
     }
 }
