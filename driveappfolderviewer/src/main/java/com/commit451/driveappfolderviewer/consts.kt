@@ -13,3 +13,7 @@ const val SPACE = "appDataFolder"
  * Can change this to "DriveScopes.DRIVE_FILE" for testing
  */
 const val SCOPE = DriveScopes.DRIVE_APPDATA
+
+const val FILE_FIELDS = "id,name,modifiedTime,size,mimeType"
+
+const val FILES_FIELDS = "files($FILE_FIELDS)"

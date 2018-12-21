@@ -109,6 +109,7 @@ class DriveAppFolderViewerActivity : DriveAppViewerBaseActivity() {
                         .list()
                         .setSpaces(SPACE)
                         .setQ("'$fileId' in parents")
+                        .setFields(FILES_FIELDS)
                         .setPageSize(1000)
                         .asSingle()
                         .with()

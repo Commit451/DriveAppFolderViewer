@@ -49,12 +49,12 @@ class DriveAppFileViewerActivity : DriveAppViewerBaseActivity() {
 
         disposables.add(
                 drive!!.files().get(fileId)
-                        .setFields("name,createdTime,modifiedTime")
+                        .setFields(FILE_FIELDS)
                         .asSingle()
                         .with()
                         .subscribe({
                             toolbar.title = it.name
-                            toolbar.subtitle = "Created ${it.createdTime}"
+                            toolbar.subtitle = "Modified ${it.modifiedTime}"
                         }, {
                             error(it)
                         })
