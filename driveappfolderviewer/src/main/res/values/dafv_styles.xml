@@ -1,8 +1,15 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Base application theme. -->
-    <style name="dafv_DriveAppFolderViewerTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
+    <style name="dafv_DriveAppFolderViewerTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#FFFFFF</item>
+        <item name="colorPrimaryDark">#FFFFFF</item>
+        <item name="colorAccent">#FFFFFF</item>
+
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+
+        <item name="android:navigationBarColor" tools:targetApi="lollipop">#ffffff</item>
+        <item name="android:navigationBarDividerColor" tools:targetApi="o_mr1">#DCDCDC</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
     </style>
 
 </resources>

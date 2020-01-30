@@ -1,18 +1,18 @@
 package com.commit451.driveappfolderviewer.sample
 
-import com.commit451.driveappfolderviewer.MIME_TYPE_FOLDER
-import com.commit451.driveappfolderviewer.SPACE
 import com.google.api.client.http.ByteArrayContent
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.model.File
 import io.reactivex.Completable
 import java.util.*
 
-
 /**
  * Creates testing things
  */
 object TestApi {
+
+    private const val MIME_TYPE_FOLDER = "application/vnd.google-apps.folder"
+    private const val SPACE = "appDataFolder"
 
     fun createFiles(drive: Drive): Completable {
         return Completable.defer {

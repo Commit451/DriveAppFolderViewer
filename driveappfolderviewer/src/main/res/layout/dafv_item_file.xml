@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:contentDescription="@null"
-        android:tint="@android:color/black"
+        android:tint="@color/dafv_icon_color"
         tools:src="@drawable/dafv_ic_folder_24dp" />
 
     <TextView
@@ -43,7 +43,7 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@null"
         android:padding="8dp"
-        android:tint="@android:color/black"
+        android:tint="@color/dafv_icon_color"
         app:srcCompat="@drawable/dafv_ic_overflow_24dp" />
 
 </LinearLayout>

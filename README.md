@@ -46,7 +46,7 @@ To contribute to this project and test it with the sample within this repo, you 
 License
 --------
 
-    Copyright 2018 Commit 451
+    Copyright 2020 Commit 451
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

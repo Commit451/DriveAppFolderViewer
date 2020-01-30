@@ -41,10 +41,10 @@ class DriveAppFolderViewerActivity : DriveAppViewerBaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dafv_activity_drive_app_folder_viewer)
 
-        textPath = findViewById<View>(android.R.id.text1) as TextView
-        swipeRefreshLayout = findViewById<View>(android.R.id.progress) as SwipeRefreshLayout
-        list = findViewById<View>(android.R.id.list) as RecyclerView
-        textMessage = findViewById<View>(android.R.id.message) as TextView
+        textPath = findViewById(android.R.id.text1)
+        swipeRefreshLayout = findViewById(android.R.id.progress)
+        list = findViewById(android.R.id.list)
+        textMessage = findViewById(android.R.id.message)
 
         textPath.setOnClickListener {
             onBackPressed()

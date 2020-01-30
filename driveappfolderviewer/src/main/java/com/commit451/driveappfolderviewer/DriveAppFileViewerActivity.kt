@@ -9,6 +9,8 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import com.commit451.okyo.Okyo
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import io.reactivex.disposables.CompositeDisposable
@@ -41,6 +43,7 @@ class DriveAppFileViewerActivity : DriveAppViewerBaseActivity() {
 
         toolbar = findViewById(R.id.toolbar)
         toolbar.setNavigationIcon(R.drawable.dafv_ic_close_black_24dp)
+        DrawableCompat.setTint(toolbar.navigationIcon!!, ContextCompat.getColor(this, R.color.dafv_navigation_color))
         toolbar.setNavigationOnClickListener { onBackPressed() }
         textMessage = findViewById(android.R.id.text1)
         progress = findViewById(android.R.id.progress)
