@@ -3,7 +3,7 @@ package com.commit451.driveappfolderviewer.sample
 import com.google.api.client.http.ByteArrayContent
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.model.File
-import io.reactivex.Completable
+import io.reactivex.rxjava3.core.Completable
 import java.util.*
 
 /**

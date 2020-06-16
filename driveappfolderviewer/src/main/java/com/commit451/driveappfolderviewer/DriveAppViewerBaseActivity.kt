@@ -18,7 +18,6 @@ import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import java.util.*
 
-
 abstract class DriveAppViewerBaseActivity : AppCompatActivity() {
 
     companion object {

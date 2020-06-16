@@ -4,13 +4,11 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import com.commit451.driveappfolderviewer.DriveAppFolderViewer
-
-import com.commit451.driveappfolderviewer.DriveAppFolderViewerActivity
 import com.commit451.driveappfolderviewer.DriveAppViewerBaseActivity
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.material.snackbar.Snackbar
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**

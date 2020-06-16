@@ -13,7 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.commit451.okyo.Okyo
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 /**
  * Shows the contents of a single file within the app folder

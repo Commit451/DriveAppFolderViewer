@@ -29,9 +29,9 @@ dependencies {
     api "androidx.appcompat:appcompat:1.1.0"
     api "androidx.recyclerview:recyclerview:1.1.0"
     api "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
-    api "com.google.android.material:material:1.2.0-alpha04"
+    api "com.google.android.material:material:1.2.0-beta01"
 
-    api "com.google.android.gms:play-services-auth:17.0.0"
+    api "com.google.android.gms:play-services-auth:18.0.0"
     api "com.google.http-client:google-http-client-gson:1.26.0"
     api("com.google.api-client:google-api-client-android:1.26.0") {
         exclude group: "org.apache.httpcomponents"
@@ -40,10 +40,10 @@ dependencies {
         exclude group: "org.apache.httpcomponents"
     }
 
-    api "io.reactivex.rxjava2:rxjava:2.2.17"
-    api "io.reactivex.rxjava2:rxandroid:2.1.1"
+    api "io.reactivex.rxjava3:rxjava:3.0.4"
+    api "io.reactivex.rxjava3:rxandroid:3.0.0"
 
     api "com.github.Commit451:okyo:3.0.2"
 }
 
-apply from: "https://raw.githubusercontent.com/Commit451/gradle-android-javadocs/1.0.0/gradle-android-javadocs.gradle"
+apply from: "https://raw.githubusercontent.com/Commit451/gradle-android-javadocs/1.1.0/gradle-android-javadocs.gradle"
