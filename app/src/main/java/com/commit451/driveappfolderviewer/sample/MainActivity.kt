@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import com.commit451.driveappfolderviewer.DriveAppFolderViewer
 import com.commit451.driveappfolderviewer.DriveAppViewerBaseActivity
+import com.commit451.driveappfolderviewer.sample.TestApi.createFiles
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 
 /**
@@ -57,9 +58,11 @@ class MainActivity : DriveAppViewerBaseActivity() {
         }
 
         viewModel.toastMessage.observe(this) {
-            Toast.makeText(this, it, Toast.LENGTH_SHORT)
-                .show()
-            viewModel.onToastShown()
+            if (it != null) {
+                Toast.makeText(this, it, Toast.LENGTH_SHORT)
+                    .show()
+                viewModel.onToastShown()
+            }
         }
     }
 

@@ -7,12 +7,12 @@ import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.api.services.drive.model.File
-import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 /**
  * Allows you to view your private app drive files and folders
@@ -33,13 +33,13 @@ class DriveAppFolderViewerActivity : DriveAppViewerBaseActivity() {
 
     private lateinit var adapter: FilesAdapter
 
-    private var path = mutableListOf<Path>()
-
-    private val disposables = CompositeDisposable()
+    private lateinit var viewModel: DriveAppFolderViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dafv_activity_drive_app_folder_viewer)
+
+        viewModel = ViewModelProvider(this)[DriveAppFolderViewModel::class.java]
 
         textPath = findViewById(android.R.id.text1)
         swipeRefreshLayout = findViewById(android.R.id.progress)
@@ -51,29 +51,11 @@ class DriveAppFolderViewerActivity : DriveAppViewerBaseActivity() {
         }
         adapter = FilesAdapter(object : FilesAdapter.Listener {
             override fun onDeleteClicked(file: File) {
-                val disposable = drive!!.files().delete(file.id)
-                        .asCompletable()
-                        .with()
-                        .subscribe({
-                            Toast.makeText(this@DriveAppFolderViewerActivity, "File deleted", Toast.LENGTH_SHORT)
-                                    .show()
-                            refresh()
-                        }, {
-                            Toast.makeText(this@DriveAppFolderViewerActivity, "Failed to delete", Toast.LENGTH_SHORT)
-                                    .show()
-                        })
-                disposables.add(disposable)
+                viewModel.onDeleteFile(drive!!, file)
             }
 
             override fun onFileClicked(file: File) {
-                if (file.mimeType == MIME_TYPE_FOLDER) {
-                    path.add(Path(file.id, file.name))
-                    updatePath()
-                    loadFilesInFolder(file.id)
-                } else {
-                    val intent = DriveAppFileViewerActivity.newIntent(this@DriveAppFolderViewerActivity, file.id)
-                    startActivity(intent)
-                }
+                viewModel.onFileClicked(drive!!, file)
             }
 
             override fun onSizeClicked(file: File) {
@@ -83,47 +65,23 @@ class DriveAppFolderViewerActivity : DriveAppViewerBaseActivity() {
         })
         list.layoutManager = LinearLayoutManager(this)
         list.adapter = adapter
-        swipeRefreshLayout.setOnRefreshListener { refresh() }
 
-        updatePath()
+        viewModel.uiState.observe(this) {
+
+            adapter.setFiles(it.files)
+        }
+        viewModel.toastMessage.observe(this) {
+            if (it != null) {
+                Toast.makeText(this, it, Toast.LENGTH_SHORT)
+                    .show()
+                viewModel.onToastShown()
+            }
+        }
     }
 
     override fun onSignedIn(googleSignInAccount: GoogleSignInAccount) {
         super.onSignedIn(googleSignInAccount)
-        path.clear()
-        path.add(Path(SPACE, SPACE))
-        updatePath()
-        loadFilesInFolder(SPACE)
-    }
-
-    override fun onDestroy() {
-        disposables.clear()
-        super.onDestroy()
-    }
-
-    private fun loadFilesInFolder(fileId: String) {
-        textMessage.visibility = View.GONE
-        swipeRefreshLayout.isRefreshing = true
-        disposables.add(
-                drive!!.files()
-                        .list()
-                        .setSpaces(SPACE)
-                        .setQ("'$fileId' in parents")
-                        .setFields(FILES_FIELDS)
-                        .setPageSize(1000)
-                        .asSingle()
-                        .with()
-                        .subscribe({
-                            swipeRefreshLayout.isRefreshing = false
-                            adapter.setFiles(it.files)
-                            if (it.files.isNullOrEmpty()) {
-                                showEmpty()
-                            }
-                        }, {
-                            swipeRefreshLayout.isRefreshing = false
-                            showError(it)
-                        })
-        )
+        viewModel.onSignedIn(drive!!)
     }
 
     private fun showError(throwable: Throwable) {
@@ -137,25 +95,10 @@ class DriveAppFolderViewerActivity : DriveAppViewerBaseActivity() {
         textMessage.text = "Empty"
     }
 
-    private fun refresh() {
-        val folder = path.last()
-        loadFilesInFolder(folder.id)
-    }
-
-    private fun updatePath() {
-        textPath.text = path.joinToString("/") { it.name }
-    }
-
     override fun onBackPressed() {
-        if (path.size == 1) {
+        val handled = viewModel.onBackPressed(drive!!)
+        if (!handled) {
             super.onBackPressed()
-        } else {
-            path.remove(path.last())
-            val folder = path.last()
-            loadFilesInFolder(folder.id)
-            updatePath()
         }
     }
-
-    data class Path(val id: String, val name: String)
 }

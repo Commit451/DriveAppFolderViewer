@@ -27,10 +27,9 @@ internal class FileViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private var imageView: ImageView = view.findViewById<View>(R.id.file_image) as ImageView
     private var moreView: ImageView = view.findViewById<View>(R.id.file_more) as ImageView
 
-    val popupMenu: PopupMenu
+    val popupMenu: PopupMenu = PopupMenu(itemView.context, moreView)
 
     init {
-        popupMenu = PopupMenu(itemView.context, moreView)
         popupMenu.menuInflater.inflate(R.menu.dafv_menu_file, popupMenu.menu)
 
         moreView.setOnClickListener { popupMenu.show() }
