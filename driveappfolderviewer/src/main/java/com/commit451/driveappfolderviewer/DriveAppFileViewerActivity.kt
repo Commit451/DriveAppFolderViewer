@@ -13,7 +13,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.commit451.okyo.Okyo
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 /**
  * Shows the contents of a single file within the app folder
@@ -34,8 +33,6 @@ class DriveAppFileViewerActivity : DriveAppViewerBaseActivity() {
     private lateinit var toolbar: Toolbar
     private lateinit var progress: ProgressBar
     private lateinit var textMessage: TextView
-
-    private val disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,11 +76,6 @@ class DriveAppFileViewerActivity : DriveAppViewerBaseActivity() {
                             error(it)
                         })
         )
-    }
-
-    override fun onDestroy() {
-        disposables.clear()
-        super.onDestroy()
     }
 
     private fun error(throwable: Throwable) {

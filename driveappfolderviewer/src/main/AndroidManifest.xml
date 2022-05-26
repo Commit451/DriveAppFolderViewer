@@ -5,10 +5,12 @@
 
         <activity
             android:name=".DriveAppFolderViewerActivity"
+            android:exported="true"
             android:theme="@style/dafv_DriveAppFolderViewerTheme" />
 
         <activity
             android:name=".DriveAppFileViewerActivity"
+            android:exported="true"
             android:theme="@style/dafv_DriveAppFolderViewerTheme" />
 
     </application>

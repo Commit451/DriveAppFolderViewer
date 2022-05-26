@@ -1,14 +1,21 @@
 apply plugin: "com.android.library"
 apply plugin: "kotlin-android"
+apply from: "../publish.gradle"
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 32
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 29
+        targetSdkVersion 32
         versionCode 1
         versionName "1.0"
+    }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.1.1"
     }
     buildTypes {
         release {
@@ -24,14 +31,16 @@ android {
 }
 
 dependencies {
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation("androidx.activity:activity-compose:1.4.0")
+    // Compose Material Design
+    implementation("androidx.compose.material:material:1.1.1")
 
-    api "androidx.appcompat:appcompat:1.1.0"
-    api "androidx.recyclerview:recyclerview:1.1.0"
-    api "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
-    api "com.google.android.material:material:1.2.0-beta01"
+    api "androidx.appcompat:appcompat:1.4.1"
+    api "androidx.recyclerview:recyclerview:1.2.1"
+    api "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+    api "com.google.android.material:material:1.6.0"
 
-    api "com.google.android.gms:play-services-auth:18.0.0"
+    api "com.google.android.gms:play-services-auth:20.2.0"
     api "com.google.http-client:google-http-client-gson:1.26.0"
     api("com.google.api-client:google-api-client-android:1.26.0") {
         exclude group: "org.apache.httpcomponents"
@@ -40,10 +49,5 @@ dependencies {
         exclude group: "org.apache.httpcomponents"
     }
 
-    api "io.reactivex.rxjava3:rxjava:3.0.4"
-    api "io.reactivex.rxjava3:rxandroid:3.0.0"
-
     api "com.github.Commit451:okyo:3.0.2"
 }
-
-apply from: "https://raw.githubusercontent.com/Commit451/gradle-android-javadocs/1.1.0/gradle-android-javadocs.gradle"
