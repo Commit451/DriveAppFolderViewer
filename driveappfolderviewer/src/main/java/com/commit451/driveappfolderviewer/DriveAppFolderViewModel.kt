@@ -3,7 +3,6 @@ package com.commit451.driveappfolderviewer
 import android.app.Activity
 import android.app.Application
 import android.util.Log
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -62,10 +61,17 @@ class DriveAppFolderViewModel(application: Application) : AndroidViewModel(appli
             withContext(Dispatchers.IO) {
                 try {
                     drive.files().delete(file.id).execute()
+                    loadFilesInFolder(drive)
                 } catch (e: Exception) {
-                    _toastMessage.value = e.message
+                    sendToast(e.message)
                 }
             }
+        }
+    }
+
+    private suspend fun sendToast(message: String?) {
+        withContext(Dispatchers.Main) {
+            _toastMessage.value = message
         }
     }
 
@@ -73,13 +79,15 @@ class DriveAppFolderViewModel(application: Application) : AndroidViewModel(appli
         _toastMessage.value = null
     }
 
-    private fun loadFilesInFolder(drive: Drive, fileId: String) {
-        _uiState.value = _uiState.value?.copy(
-            isLoading = true,
-            errorMessage = "",
-            emptyMessage = "",
-        )
+    private fun loadFilesInFolder(drive: Drive, fileId: String = path.last().id) {
         viewModelScope.launch {
+            updateState(
+                _uiState.value?.copy(
+                    isLoading = true,
+                    errorMessage = "",
+                    emptyMessage = "",
+                )
+            )
             withContext(Dispatchers.IO) {
                 try {
                     val files = drive.files()

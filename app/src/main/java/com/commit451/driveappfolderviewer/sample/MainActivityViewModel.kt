@@ -21,11 +21,17 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
             withContext(Dispatchers.IO) {
                 try {
                     TestApi.createFiles(drive)
-                    _toastMessage.value = "Files created"
+                    sendToast("Files created")
                 } catch (e: Exception) {
-                    _toastMessage.value = "Failed to create files. Check LogCat"
+                    sendToast("Failed to create files. Check LogCat")
                 }
             }
+        }
+    }
+
+    private suspend fun sendToast(message: String) {
+        withContext(Dispatchers.Main) {
+            _toastMessage.value = message
         }
     }
 

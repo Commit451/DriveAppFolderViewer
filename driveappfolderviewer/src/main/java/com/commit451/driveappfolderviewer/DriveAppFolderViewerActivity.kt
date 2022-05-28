@@ -3,14 +3,11 @@ package com.commit451.driveappfolderviewer
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.api.services.drive.model.File
 
@@ -27,7 +24,6 @@ class DriveAppFolderViewerActivity : DriveAppViewerBaseActivity() {
     }
 
     private lateinit var textPath: TextView
-    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var list: RecyclerView
     private lateinit var textMessage: TextView
 
@@ -42,7 +38,6 @@ class DriveAppFolderViewerActivity : DriveAppViewerBaseActivity() {
         viewModel = ViewModelProvider(this)[DriveAppFolderViewModel::class.java]
 
         textPath = findViewById(android.R.id.text1)
-        swipeRefreshLayout = findViewById(android.R.id.progress)
         list = findViewById(android.R.id.list)
         textMessage = findViewById(android.R.id.message)
 
@@ -60,8 +55,12 @@ class DriveAppFolderViewerActivity : DriveAppViewerBaseActivity() {
             }
 
             override fun onSizeClicked(file: File) {
-                Toast.makeText(this@DriveAppFolderViewerActivity, "File size: " + file.getSize() + " bytes", Toast.LENGTH_SHORT)
-                        .show()
+                Toast.makeText(
+                    this@DriveAppFolderViewerActivity,
+                    "File size: " + file.getSize() + " bytes",
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
             }
         })
         list.layoutManager = LinearLayoutManager(this)
@@ -83,17 +82,6 @@ class DriveAppFolderViewerActivity : DriveAppViewerBaseActivity() {
     override fun onSignedIn(googleSignInAccount: GoogleSignInAccount) {
         super.onSignedIn(googleSignInAccount)
         viewModel.onSignedIn(drive!!)
-    }
-
-    private fun showError(throwable: Throwable) {
-        Log.e(TAG, ERROR_MESSAGE, throwable)
-        textMessage.visibility = View.VISIBLE
-        textMessage.text = "Error"
-    }
-
-    private fun showEmpty() {
-        textMessage.visibility = View.VISIBLE
-        textMessage.text = "Empty"
     }
 
     override fun onBackPressed() {
