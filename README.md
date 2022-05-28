@@ -21,7 +21,7 @@ Then, add the library to your project `build.gradle`
 ```gradle
 dependencies {
     debugImplementation 'com.github.Commit451:DriveAppFolderViewer:latest.version.here'
-    //or, just "implementation" if you want to use this in all your builds
+    // or, just "implementation" if you want to use this in all your builds
 }
 ```
 We recommend restricting access to this UI to just debug builds, since it is powerful and users could end up deleting important files without understanding what they do.

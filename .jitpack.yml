@@ -1,4 +1,2 @@
 jdk:
   - openjdk11
-install:
-   - ./gradlew clean veyron:assemble rxjava:assemble veyron:publishToMavenLocal rxjava:publishToMavenLocal
