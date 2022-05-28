@@ -49,13 +49,14 @@ class DriveAppFolderViewerActivity : DriveAppViewerBaseActivity() {
         textPath.setOnClickListener {
             onBackPressed()
         }
+        val activity = this
         adapter = FilesAdapter(object : FilesAdapter.Listener {
             override fun onDeleteClicked(file: File) {
                 viewModel.onDeleteFile(drive!!, file)
             }
 
             override fun onFileClicked(file: File) {
-                viewModel.onFileClicked(drive!!, file)
+                viewModel.onFileClicked(activity, drive!!, file)
             }
 
             override fun onSizeClicked(file: File) {
@@ -67,7 +68,7 @@ class DriveAppFolderViewerActivity : DriveAppViewerBaseActivity() {
         list.adapter = adapter
 
         viewModel.uiState.observe(this) {
-
+            textPath.text = it.pathText
             adapter.setFiles(it.files)
         }
         viewModel.toastMessage.observe(this) {

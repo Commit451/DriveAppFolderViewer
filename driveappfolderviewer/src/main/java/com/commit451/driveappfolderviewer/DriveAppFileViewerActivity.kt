@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 
@@ -57,6 +58,14 @@ class DriveAppFileViewerActivity : DriveAppViewerBaseActivity() {
             if (state.error != null) {
                 error(state.error)
             }
+            if (state.emptyMessage.isNotEmpty()) {
+                textMessage.text = state.emptyMessage
+            }
+            if (state.fileAsString.isNotEmpty()) {
+                textMessage.text = state.fileAsString
+            }
+
+            progress.isVisible = state.isLoading
         }
     }
 

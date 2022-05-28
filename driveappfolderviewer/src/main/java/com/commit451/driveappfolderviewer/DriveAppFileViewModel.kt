@@ -42,10 +42,13 @@ class DriveAppFileViewModel(application: Application) : AndroidViewModel(applica
 
                     val content = Okyo.readInputStreamAsString(inputStream)
 
-                    _uiState.value = _uiState.value?.copy(
-                        title = file.name,
-                        subtitle = "Modified ${file.modifiedTime}",
-                        fileAsString = content,
+                    updateState(
+                        _uiState.value?.copy(
+                            title = file.name,
+                            subtitle = "Modified ${file.modifiedTime}",
+                            fileAsString = content,
+                            isLoading = false,
+                        )
                     )
                 } catch (e: Exception) {
                     Log.e(TAG, ERROR_MESSAGE, e)
@@ -55,6 +58,12 @@ class DriveAppFileViewModel(application: Application) : AndroidViewModel(applica
                     )
                 }
             }
+        }
+    }
+
+    private suspend fun updateState(state: State?) {
+        withContext(Dispatchers.Main) {
+            _uiState.value = state
         }
     }
 

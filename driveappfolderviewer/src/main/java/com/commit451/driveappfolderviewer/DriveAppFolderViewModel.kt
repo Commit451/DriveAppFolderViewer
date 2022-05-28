@@ -1,5 +1,6 @@
 package com.commit451.driveappfolderviewer
 
+import android.app.Activity
 import android.app.Application
 import android.util.Log
 import androidx.core.content.ContextCompat.startActivity
@@ -44,7 +45,7 @@ class DriveAppFolderViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
-    fun onFileClicked(drive: Drive, file: File) {
+    fun onFileClicked(activity: Activity, drive: Drive, file: File) {
         if (file.mimeType == MIME_TYPE_FOLDER) {
             path.add(Path(file.id, file.name))
             updatePath()
@@ -52,7 +53,7 @@ class DriveAppFolderViewModel(application: Application) : AndroidViewModel(appli
             //TODO load new folder
         } else {
             val intent = DriveAppFileViewerActivity.newIntent(getApplication(), file.id)
-            startActivity(getApplication(), intent, null)
+            activity.startActivity(intent)
         }
     }
 
@@ -89,21 +90,36 @@ class DriveAppFolderViewModel(application: Application) : AndroidViewModel(appli
                         .setPageSize(1000)
                         .execute()
                     if (files.isEmpty()) {
-                        _uiState.value = _uiState.value?.copy(
-                            emptyMessage = "Empty",
+                        updateState(
+                            _uiState.value?.copy(
+                                emptyMessage = "Empty",
+                                isLoading = false,
+                            )
                         )
                     } else {
-                        _uiState.value = _uiState.value?.copy(
-                            files = files.files,
+                        updateState(
+                            _uiState.value?.copy(
+                                files = files.files,
+                                isLoading = false,
+                            )
                         )
                     }
                 } catch (e: Exception) {
                     Log.e(TAG, ERROR_MESSAGE, e)
-                    _uiState.value = _uiState.value?.copy(
-                        errorMessage = "Error"
+                    updateState(
+                        _uiState.value?.copy(
+                            errorMessage = "Error",
+                            isLoading = false,
+                        )
                     )
                 }
             }
+        }
+    }
+
+    private suspend fun updateState(state: State?) {
+        withContext(Dispatchers.Main) {
+            _uiState.value = state
         }
     }
 
