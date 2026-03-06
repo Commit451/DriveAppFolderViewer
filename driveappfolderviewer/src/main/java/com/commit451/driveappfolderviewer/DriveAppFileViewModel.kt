@@ -6,7 +6,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.commit451.okyo.Okyo
 import com.google.api.services.drive.Drive
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -40,7 +39,7 @@ class DriveAppFileViewModel(application: Application) : AndroidViewModel(applica
                     val inputStream = drive.files().get(fileId)
                         .executeMediaAsInputStream()
 
-                    val content = Okyo.readInputStreamAsString(inputStream)
+                    val content = inputStream.bufferedReader().use { it.readText() }
 
                     updateState(
                         _uiState.value?.copy(
