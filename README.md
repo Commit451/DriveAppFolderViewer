@@ -3,27 +3,16 @@ Allows easy visualization of files within an AppFolder in Google Drive
 
 <img src="/art/screenshot-1.png?raw=true" width="200px">
 
-[![](https://jitpack.io/v/Commit451/DriveAppFolderViewer.svg)](https://jitpack.io/#Commit451/DriveAppFolderViewer)
+[![Build](https://github.com/Commit451/DriveAppFolderViewer/actions/workflows/ci.yml/badge.svg)](https://github.com/Commit451/DriveAppFolderViewer/actions/workflows/ci.yml) [![Maven Central](https://img.shields.io/maven-central/v/com.commit451.driveappfolderviewer/driveappfolderviewer.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/com.commit451.driveappfolderviewer/driveappfolderviewer)
 
 ## Dependency
-Add this in your root `build.gradle` file (**not** your module `build.gradle` file):
-
-```gradle
-allprojects {
-	repositories {
-		...
-		maven { url "https://jitpack.io" }
-	}
-}
-```
-
-Then, add the library to your project `build.gradle`
-```gradle
+```kotlin
 dependencies {
-    debugImplementation 'com.github.Commit451:DriveAppFolderViewer:latest.version.here'
-    // or, just "implementation" if you want to use this in all your builds
+    debugImplementation("com.commit451.driveappfolderviewer:driveappfolderviewer:<latest-version>")
+    // or use implementation(...) if you want it in all builds
 }
 ```
+
 We recommend restricting access to this UI to just debug builds, since it is powerful and users could end up deleting important files without understanding what they do.
 
 ## Usage
@@ -39,7 +28,7 @@ Note: This library makes no attempt to resolve Google API connection issues, so 
 To contribute to this project and test it with the sample within this repo, you will need to generate your own OAuth 2.0 Client ID following the steps [here](https://developers.google.com/drive/android/get-started)
 
 ## Note
-- This library is pretty hefty, bringing in Kotlin, Coroutines, okio, and [okyo](https://github.com/Commit451/okyo), as well as the Google Drive v3 Java APIs. Make sure you are aware of this.
+- This library is pretty hefty, bringing in Kotlin, Coroutines, and the Google Drive v3 Java APIs. Make sure you are aware of this.
 - There is a 1,000 page limit on results, therefore only the first 1,000 files/folders will be shown within a folder.
 
 License
